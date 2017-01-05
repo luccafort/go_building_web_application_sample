@@ -16,7 +16,7 @@ type templateHandler struct {
 }
 
 // ServerHTTPはHTTPリクエストを処理します
-func (t *templateHandler) ServerHTTP(w http.ResponseWriter, r *http.Request) {
+func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
@@ -24,11 +24,7 @@ func (t *templateHandler) ServerHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`
-			
-		`))
-	})
+	http.Handle("/", &templateHandler{filename: "chat.html"})
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServer", err)
