@@ -4,11 +4,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type room struct {
-	// forwardは他のクライアントに転送するためにメッセージを保持するチャンネル
-	forward chan []byte
-}
-
 // clientはチャットを行っている1人のユーザを表します
 type client struct {
 	// socketはこのクライアントのためのWebSocketです
