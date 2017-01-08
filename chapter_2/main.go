@@ -7,6 +7,11 @@ import (
 	"net/http"
 	"path/filepath"
 	"sync"
+
+	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/facebook"
+	"github.com/stretchr/gomniauth/providers/github"
+	"github.com/stretchr/gomniauth/providers/google"
 )
 
 // templは1つのテンプレートを表します
@@ -25,8 +30,16 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var addr = flag.String("addr", ":8080", "アプリケーションのアドレス")
+	var addr = flag.String("host", ":8080", "アプリケーションのアドレス")
 	flag.Parse()
+
+	// Gomniauthのセットアップ
+	gomniauth.SetSecurityKey("t9UHTgjUUJ")
+	gomniauth.WithProviders(
+		facebook.New("クライアントID", "秘密の値", "http://localhost:8080/auth/callback/facebook"),
+		github.New("クライアントID", "秘密の値", "http://localhost:8080/auth/callback/github"),
+		google.New("クライアントID", "秘密の値", "http://localhost:8080/auth/callback/google"),
+	)
 
 	r := newRoom()
 	//r.tracer = trace.New(os.Stdout)
