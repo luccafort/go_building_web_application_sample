@@ -6,10 +6,11 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/luccafort/building_web_application/trace"
+	"github.com/stretchr/objx"
 )
 
 type room struct {
-	forward chan []byte      // forwardは他のクライアントに転送するためにメッセージを保持するチャネル
+	forward chan *message    // forwardは他のクライアントに転送するためにメッセージを保持するチャネル
 	join    chan *client     // join はチャットルームに参加しようとしているクライアントのためのチャネル
 	leave   chan *client     // leave はチャットルームから退室しようとしているクライアントのためのチャネル
 	clients map[*client]bool // clients には在室している全てのクライアントが保持されます
@@ -19,7 +20,7 @@ type room struct {
 // newRoom はすぐに利用できるチャットルームを生成して返す
 func newRoom() *room {
 	return &room{
-		forward: make(chan []byte),
+		forward: make(chan *message),
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
@@ -40,7 +41,7 @@ func (r *room) run() {
 			close(client.send)
 			r.tracer.Trace("クライアントが退室しました")
 		case msg := <-r.forward:
-			r.tracer.Trace("メッセージを送信しました: ", string(msg))
+			r.tracer.Trace("メッセージを送信しました: ", msg.Message)
 			// 全てのクライアントにメッセージを転送
 			for client := range r.clients {
 				select {
@@ -67,13 +68,21 @@ var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBuffer
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		log.Fatal("ServeHTTP", err)
+		log.Fatal("ServeHTTP:", err)
 		return
 	}
+
+	authCookie, err := req.Cookie("auth")
+	if err != nil {
+		log.Fatalln("クッキーの取得に失敗しました", err)
+		return
+	}
+
 	client := &client{
-		socket: socket,
-		send:   make(chan []byte, messageBufferSize),
-		room:   r,
+		socket:   socket,
+		send:     make(chan *message, messageBufferSize),
+		room:     r,
+		userData: objx.MustFromBase64(authCookie.Value),
 	}
 	r.join <- client
 	defer func() {
