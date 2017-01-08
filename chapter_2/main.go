@@ -36,8 +36,8 @@ func main() {
 	http.HandleFunc("/auth/", loginHandler)
 	http.Handle("/room", r)
 
-	// asset設定
-	//http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("../assets/"))))
+	// assets設定
+	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets/"))))
 
 	// チャットルームの開始
 	go r.run()
