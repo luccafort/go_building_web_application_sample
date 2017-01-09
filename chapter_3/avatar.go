@@ -1,6 +1,8 @@
 package main
 
 import "errors"
+import "io/ioutil"
+import "path/filepath"
 
 // ErrNoAvator はAvatarインスタンスがアバターのURLを返すことができない場合に発生するエラー
 var ErrNoAvatorURL = errors.New("chat: アバターのURLを取得できません")
@@ -52,7 +54,17 @@ var UseFileSystemAvatar FileSystemAvatar
 func (_ FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
 	if _userid, ok := c.userData["userid"]; ok {
 		if userid, ok := _userid.(string); ok {
-			return "/avatars/" + userid + ".jpg", nil
+			if files, err := ioutil.ReadDir("avatars"); err == nil {
+				for _, file := range files {
+					if file.IsDir() {
+						continue
+					}
+					// ユーザIDにマッチするか精査
+					if match, _ := filepath.Match(userid+"*", file.Name()); match {
+						return "/avatars/" + file.Name(), nil
+					}
+				}
+			}
 		}
 	}
 	return "", ErrNoAvatorURL
