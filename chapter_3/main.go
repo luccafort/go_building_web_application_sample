@@ -15,6 +15,8 @@ import (
 	"github.com/stretchr/objx"
 )
 
+var avatars Avatar = UseFileSystemAvatar
+
 // templは1つのテンプレートを表します
 type templateHandler struct {
 	once     sync.Once

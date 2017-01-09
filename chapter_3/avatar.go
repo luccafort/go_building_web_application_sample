@@ -14,7 +14,7 @@ type Avatar interface {
 	 * 問題が発生した場合にはエラーを返す。
 	 * 特にURLを取得できなかった場合にErrNoAvatarを返す
 	 */
-	GetAvatarURL(c *client) (string, error)
+	GetAvatarURL(ChatUser) (string, error)
 }
 
 type AuthAvatar struct{}
@@ -22,11 +22,10 @@ type AuthAvatar struct{}
 var UseAuthAvatar AuthAvatar
 
 // オブジェクトの参照がないため"_"で参照しないことを明示("_"は省略も可)
-func (_ AuthAvatar) GetAvatarURL(c *client) (string, error) {
-	if url, ok := c.userData["avatar_url"]; ok {
-		if retURL, ok := url.(string); ok {
-			return retURL, nil
-		}
+func (_ AuthAvatar) GetAvatarURL(u ChatUser) (string, error) {
+	url := u.AvatarURL()
+	if url != "" {
+		return url, nil
 	}
 	return "", ErrNoAvatorURL
 
@@ -37,33 +36,23 @@ type GravatarAvatar struct{}
 
 var UseGravatar GravatarAvatar
 
-func (_ GravatarAvatar) GetAvatarURL(c *client) (string, error) {
-	var key string = "userid"
-	if _userid, ok := c.userData[key]; ok {
-		if userid, ok := _userid.(string); ok {
-			return "//www.gravatar.com/avatar/" + userid, nil
-		}
-	}
-	return "", ErrNoAvatorURL
+func (_ GravatarAvatar) GetAvatarURL(u ChatUser) (string, error) {
+	return "//www.gravatar.com/avatar/" + u.UniqueID(), nil
 }
 
 type FileSystemAvatar struct{}
 
 var UseFileSystemAvatar FileSystemAvatar
 
-func (_ FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
-	if _userid, ok := c.userData["userid"]; ok {
-		if userid, ok := _userid.(string); ok {
-			if files, err := ioutil.ReadDir("avatars"); err == nil {
-				for _, file := range files {
-					if file.IsDir() {
-						continue
-					}
-					// ユーザIDにマッチするか精査
-					if match, _ := filepath.Match(userid+"*", file.Name()); match {
-						return "/avatars/" + file.Name(), nil
-					}
-				}
+func (_ FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
+	if files, err := ioutil.ReadDir("avatars"); err == nil {
+		for _, file := range files {
+			if file.IsDir() {
+				continue
+			}
+			// ユーザIDにマッチするか精査
+			if match, _ := filepath.Match(u.UniqueID()+"*", file.Name()); match {
+				return "/avatars/" + file.Name(), nil
 			}
 		}
 	}
