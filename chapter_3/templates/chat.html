@@ -12,7 +12,7 @@
 		<form id="chatbox">
 			<p>{{.UserData.name}}:</p>
 			<textarea></textarea>
-			<input type="submit" value="送信" />
+			<p><input type="submit" value="送信" /></p>
 			<a href="/logout">サインアウト</a>
 		</form>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -42,6 +42,7 @@
 						var msg = JSON.parse(e.data);
 						messages.append(
 							$("<li>").append(
+								$("<img>").attr("src", msg.AvatarURL),
 								$("<strong>").text(msg.Name + ": "),
 								$("<span>").text(msg.Message  + " " + msg.When)
 							)
