@@ -58,8 +58,11 @@ func main() {
 	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.Handle("/room", r)
 
+	// リソースURIの登録
 	// assetsディレクトリ登録設定
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets/"))))
+	// アバター画像のホスティングディレクトリを登録
+	http.Handle("/avatars/", http.StripPrefix("/avatars/", http.FileServer(http.Dir("./avatars"))))
 
 	// ハンドラ関数の登録
 	// 認証
