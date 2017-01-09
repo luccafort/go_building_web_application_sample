@@ -1,7 +1,9 @@
 package main
 
-import "testing"
-import "log"
+import (
+	"log"
+	"testing"
+)
 
 func TestAuthAvatar(t *testing.T) {
 	var authAvatar AuthAvatar
@@ -24,16 +26,20 @@ func TestAuthAvatar(t *testing.T) {
 
 func TestGravatarAvatar(t *testing.T) {
 	var gravatarAvatar GravatarAvatar
-	var testEmail string = "MyEmailAddress@example.com"
-	var testURL string = "//www.gravatar.com/avatar/0bc83cb571cd1c50ba6f3e8a78ef1346"
+	//var testEmail string = "MyEmailAddress@example.com"
+	var testURL string = "//www.gravatar.com/avatar/"
+	var testUserID string = "0bc83cb571cd1c50ba6f3e8a78ef1346"
 
 	client := new(client)
-	client.userData = map[string]interface{}{"email": testEmail}
+	client.userData = map[string]interface{}{
+		//"email": testEmail,
+		"userid": testUserID,
+	}
 	url, err := gravatarAvatar.GetAvatarURL(client)
 	if err != nil {
 		t.Error("Gravatar.getAvatarURL()はエラーを返すべきではありません")
-	} else if url != testURL {
-		log.Printf("%s : %s", url, testURL)
+	} else if url != testURL+testUserID {
+		log.Printf("%s : %s", url, testURL+testUserID)
 		t.Error("Gravatar.GetAvatarURL()が'%s'という誤った値を返しました", url)
 	}
 }
