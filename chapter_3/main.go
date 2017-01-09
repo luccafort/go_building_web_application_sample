@@ -50,15 +50,20 @@ func main() {
 
 	r := newRoom(UseGravatar)
 	//r.tracer = trace.New(os.Stdout)
+
+	// URI設定
 	http.Handle("/", &templateHandler{filename: "chat.html"})
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
-	http.HandleFunc("/auth/", loginHandler)
+	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.Handle("/room", r)
 
-	// assets設定
+	// assetsディレクトリ登録設定
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets/"))))
 
+	// ハンドラ関数の登録
+	// 認証
+	http.HandleFunc("/auth/", loginHandler)
 	// ログアウト
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
@@ -70,6 +75,8 @@ func main() {
 		w.Header()["Location"] = []string{"/chat"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
+	// アップローダー
+	http.HandleFunc("/uploader", uploaderHandler)
 
 	// チャットルームの開始
 	go r.run()
