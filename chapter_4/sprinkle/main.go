@@ -25,6 +25,9 @@ var transforms = []string{
 }
 
 func main() {
+	// TODO:テキストデータから抽出したデータをtransforms内に格納
+	// TODO:DBから抽出したデータをtransform内に格納
+
 	rand.Seed(time.Now().UTC().UnixNano())
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {
