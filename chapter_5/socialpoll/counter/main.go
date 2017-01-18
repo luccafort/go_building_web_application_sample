@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 
 	"time"
 
@@ -94,4 +96,18 @@ func main() {
 		}
 		updater.Reset(updateDuration)
 	})
+
+	// "Ctrl + C"への応答
+	termChain := make(chan os.Signal, 1)
+	signal.Notify(termChain, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	for {
+		select {
+		case <-termChain:
+			updater.Stop()
+			q.Stop()
+		case <-q.StopChan:
+			// 完了
+			return
+		}
+	}
 }
