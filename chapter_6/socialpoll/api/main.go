@@ -24,7 +24,7 @@ func main() {
 	defer db.Close()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/polls/", withCORS(withVars(withData(db, withAPIKey(handlePolls)))))
+	mux.HandleFunc("/polls/", withCORS(withVars(withData(db, withAPIKey(handlePolls))))
 
 	log.Println("Webサーバを起動します:", addr)
 	graceful.Run(*addr, 1*time.Second, mux)
