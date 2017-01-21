@@ -30,7 +30,7 @@ google.setOnLoadCallback(function(){
 		var chart;
 		var poll = location.href.split("poll=")[1];
 		var update =function() {
-			$.get("http://localhost:8080/polls/?key=abc123", null, null, "json")
+			$.get("http://localhost:8080/"+poll+"?key=abc123", null, null, "json")
 				.done(function(polls){
 					var poll = polls[0];
 					$("[data-field='title']").text(poll.title);
@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
 						data.addColumn("string", "Option");
 						data.addColumn("number", "Votes");
 						for (var o in poll.results) {
-							data.addRow([o, poll.result[o]]);
+							data.addRow([o, poll.results[o]]);
 						}
 						if (!chart) {
 							chart = new google.visualization.PieChart(document.getElementById("chart"));
@@ -63,7 +63,6 @@ google.setOnLoadCallback(function(){
 				$.ajax({
 					url: "http://localhost:8080/"+poll+"?key=abc123",
 					type: "DELETE",
-					headers:{"Content-Type":"application/json" },
 				})
 				.done(function(data){
 					console.log(data);
