@@ -26,7 +26,7 @@ func CloseVars(r *http.Request) {
 }
 
 func GetVar(r *http.Request, key string) interface{} {
-	varsLock.Lock()
+	varsLock.RLock()
 	value := vars[r][key]
 	varsLock.RUnlock()
 	return value
