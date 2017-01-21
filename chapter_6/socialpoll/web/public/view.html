@@ -35,10 +35,10 @@ google.setOnLoadCallback(function(){
 					var poll = polls[0];
 					$("[data-field='title']").text(poll.title);
 					$("#options").empty();
-					for (var o in poll.results) {
+					for (var o in poll.options) {
 						$("#options").append(
 							$("<li>").append(
-								$("<small>").addClass("label label-default").text(poll.results[o]), " ", o
+								$("<small>").addClass("label label-default").text(poll.options[o]), " ", o
 							)
 						)
 					}
