@@ -78,7 +78,7 @@ func handlePollsDelete(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, r, http.StatusMethodNotAllowed, "全ての調査項目を削除することは出来ません")
 		return
 	}
-	if err := c.Remove(bson.ObjectIdHex(p.ID)); err != nil {
+	if err := c.RemoveId(bson.ObjectIdHex(p.ID)); err != nil {
 		respondErr(w, r, http.StatusInternalServerError, "調査項目の削除に失敗しました", err)
 		return
 	}
