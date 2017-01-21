@@ -26,7 +26,7 @@
 	</body>
 </html>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.css"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script>
 $(function(){
@@ -40,10 +40,9 @@ $(function(){
 			options[opt] = options[opt].trim();
 		}
 		$.post("http://localhost:8080/polls/?key=abc123", JSON.stringify({title: title, options: options})
-			.done(function(d, s, r){
-				location.href = "view.html?poll="+r.getResponseHeader("Location");
-			})
-		);
+		).done(function(d, s, r){
+			location.href = "view.html?poll="+r.getResponseHeader("Location");
+		});
 	});
 });
 </script>

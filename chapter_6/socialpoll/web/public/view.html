@@ -24,7 +24,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script>
-google.load("visualization", "1.0", {"package":["corechart"]});
+google.load("visualization", "1.0", {"packages":["corechart"]});
 google.setOnLoadCallback(function(){
 	$(function(){
 		var chart;
@@ -63,9 +63,14 @@ google.setOnLoadCallback(function(){
 				$.ajax({
 					url: "http://localhost:8080/"+poll+"?key=abc123",
 					type: "DELETE",
+					headers:{"Content-Type":"application/json" },
 				})
-				.done(function(){
+				.done(function(data){
+					console.log(data);
 					location.href = "/";
+				})
+				.fail(function(error){
+					console.log(error);
 				})
 			}
 		});
