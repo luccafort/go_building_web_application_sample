@@ -11,7 +11,7 @@ import (
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	// meander.APIKey = "TODO"
-	http.HandleFunc("/journyes", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/journeys", func(w http.ResponseWriter, r *http.Request) {
 		respond(w, r, meander.Journeys)
 	})
 	http.ListenAndServe(":8080", http.DefaultServeMux)
