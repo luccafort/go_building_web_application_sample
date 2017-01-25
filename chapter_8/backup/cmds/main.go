@@ -61,7 +61,7 @@ func main() {
 				fatalErr = err
 				return true
 			}
-			path.String()
+			fmt.Printf("= %s\n", path)
 			return false
 		})
 	case "add":
