@@ -17,6 +17,8 @@ type Archiver interface {
 // zipper 圧縮形式を管理
 type zipper struct{}
 
+var ZIP Archiver = (*zipper)(nil)
+
 // Archive ZIP圧縮
 func (z *zipper) Archive(src, dest string) error {
 	if err := os.MkdirAll(filepath.Dir(dest), 0777); err != nil {
