@@ -1,8 +1,9 @@
 package backup
 
-import "path/filepath"
-
-import "time"
+import (
+	"path/filepath"
+	"time"
+)
 
 // Monitor モニタリング対象の変更検知とバックアップを実行管理
 type Monitor struct {
