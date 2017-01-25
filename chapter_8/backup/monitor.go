@@ -1,7 +1,7 @@
 package backup
 
 import "path/filepath"
-import "fmt"
+
 import "time"
 
 // Monitor モニタリング対象の変更検知とバックアップを実行管理
@@ -34,6 +34,6 @@ func (m *Monitor) Now() (int, error) {
 // act バックアップを開始
 func (m *Monitor) act(path string) error {
 	dirname := filepath.Base(path)
-	filename := fmt.Sprintf(m.Archiver.DestFmt(), time.Now().UnixNano())
+	filename := m.Archiver.DestFmt()(time.Now().UnixNano())
 	return m.Archiver.Archive(path, filepath.Join(m.Destination, dirname, filename))
 }

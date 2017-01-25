@@ -2,6 +2,7 @@ package backup
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -9,7 +10,7 @@ import (
 
 // Archiver アーカイブ情報を管理
 type Archiver interface {
-	DestFmt() string
+	DestFmt() func(int64) string
 	Archive(src, dest string) error
 }
 
@@ -54,6 +55,8 @@ func (z *zipper) Archive(src, dest string) error {
 }
 
 // DestFmt 圧縮先のフォーマッタを返す
-func (z *zipper) DestFmt() string {
-	return "%d.zip"
+func (*zipper) DestFmt() func(int64) string {
+	return func(i int64) string {
+		return fmt.Sprintf("%d.zip", i)
+	}
 }
