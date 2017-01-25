@@ -7,12 +7,16 @@ import (
 	"path/filepath"
 )
 
+// Archiver アーカイブ情報を管理
 type Archiver interface {
+	DestFmt() string
 	Archive(src, dest string) error
 }
 
+// zipper 圧縮形式を管理
 type zipper struct{}
 
+// Archive ZIP圧縮
 func (z *zipper) Archive(src, dest string) error {
 	if err := os.MkdirAll(filepath.Dir(dest), 0777); err != nil {
 		return err
@@ -47,4 +51,9 @@ func (z *zipper) Archive(src, dest string) error {
 		io.Copy(f, in)
 		return nil
 	})
+}
+
+// DestFmt 圧縮先のフォーマッタを返す
+func (z *zipper) DestFmt() string {
+	return "%d.zip"
 }
